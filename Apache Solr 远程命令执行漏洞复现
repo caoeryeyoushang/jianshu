@@ -21,7 +21,7 @@ Apache Solr 5.x - 8.2.0，存在config API版本
 攻击者可以通过ConfigAPI对VelocityResponseWriter组件进行配置，将params.resource.loader.enabled设置为true。通过Velocity模板注入，实现远程代码执行漏洞的利用。
 
 0x03进攻复现
-![image](https://github.com/caoeryeyoushang/jianshu/blob/master/Apache%20Solr%20%E8%BF%9C%E7%A8%8B%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C1.png）
+>![image](https://github.com/caoeryeyoushang/jianshu/blob/master/Apache%20Solr%20%E8%BF%9C%E7%A8%8B%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C1.png）
                                                1-1
 
 我们首先得知道Solr服务中Core的名称
@@ -60,7 +60,7 @@ Apache Solr 5.x - 8.2.0，存在config API版本
 
 }
 
-![image](https://github.com/caoeryeyoushang/jianshu/blob/master/Apache%20Solr%20%E8%BF%9C%E7%A8%8B%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C2.png）
+>![image](https://github.com/caoeryeyoushang/jianshu/blob/master/Apache%20Solr%20%E8%BF%9C%E7%A8%8B%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C2.png）
                                  1-2
 
  
